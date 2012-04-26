@@ -30,15 +30,15 @@
 
 
 /**
- * Load tl_module data container
+ * Load tl_content data container
  */
-$this->loadDataContainer('tl_module');
+$this->loadDataContainer('tl_content');
 
 
 /**
- * Extend all tl_module palettes
+ * Extend all tl_content palettes
  */
-foreach ($GLOBALS['TL_DCA']['tl_module']['palettes'] as $name => $palette)
+foreach ($GLOBALS['TL_DCA']['tl_content']['palettes'] as $name => $palette)
 {
 	// Skip non-array palettes
 	if (!is_string($palette))
@@ -48,46 +48,47 @@ foreach ($GLOBALS['TL_DCA']['tl_module']['palettes'] as $name => $palette)
 
 	if (stripos($palette, 'template_legend') !== false)
 	{
-		$GLOBALS['TL_DCA']['tl_module']['palettes'][$name] = preg_replace_callback('/{template_legend(:hide)?}[a-z_,]+;/i', create_function('$matches', 'return str_replace(";", ",module_template;", $matches[0]);'), $palette);
+		$GLOBALS['TL_DCA']['tl_content']['palettes'][$name] = preg_replace_callback('/{template_legend(:hide)?}[a-z_,]+;/i', create_function('$matches', 'return str_replace(";", ",module_template;", $matches[0]);'), $palette);
 	}
 	else
 	{
-		$GLOBALS['TL_DCA']['tl_module']['palettes'][$name] .= ';{template_legend:hide},module_template';
+		$GLOBALS['TL_DCA']['tl_content']['palettes'][$name] .= ';{template_legend:hide},ce_template';
 	}
 }
 
 
 /**
- * Add a field to tl_module
+ * Add a field to tl_content
  */
-$GLOBALS['TL_DCA']['tl_module']['fields']['module_template'] = array
+$GLOBALS['TL_DCA']['tl_content']['fields']['ce_template'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['module_template'],
+	'label'                   => &$GLOBALS['TL_LANG']['tl_content']['ce_template'],
 	'exclude'                 => true,
 	'inputType'               => 'select',
-	'options_callback'        => array('tl_module_template', 'getModuleTemplates'),
+	'options_callback'        => array('tl_content_template', 'getContentTemplates'),
 	'eval'                    => array('includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'w50')
 );
 
 
 /**
- * Class tl_module_template
+ * Class tl_content_template
  *
  * Provide miscellaneous methods that are used by the data configuration array.
  * @copyright  Kamil Kuzminski 2012 
  * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com> 
  * @package    TemplateOverride 
  */
-class tl_module_template extends Backend
+class tl_content_template extends Backend
 {
 
 	/**
-	 * Return all module templates as array
+	 * Return all content element templates as array
 	 * @param DataContainer
 	 * @return array
 	 */
-	public function getModuleTemplates(DataContainer $dc)
+	public function getContentTemplates(DataContainer $dc)
 	{
+		$intTheme = 0;
 		$intPid = $dc->activeRecord->pid;
 
 		if ($this->Input->get('act') == 'overrideAll')
@@ -95,14 +96,37 @@ class tl_module_template extends Backend
 			$intPid = $this->Input->get('id');
 		}
 
+		$objPage = $this->Database->prepare("SELECT id FROM tl_page WHERE id=(SELECT pid FROM tl_article WHERE id=?)")
+								  ->limit(1)
+								  ->execute($intPid);
+
+		// Get the current theme
+		if ($objPage->numRows)
+		{
+			$objPage = $this->getPageDetails($objPage->id);
+
+			if ($objPage->layout)
+			{
+				$objLayout = $this->Database->prepare("SELECT pid FROM tl_layout WHERE id=?")
+											->limit(1)
+											->execute($objPage->layout);
+
+				// Set the current theme ID
+				if ($objLayout->numRows)
+				{
+					$intTheme = $objLayout->pid;
+				}
+			}
+		}
+
 		$arrTemplates = array();
 
 		// Return only templates with prefixes specified in configuration
-		if (is_array($GLOBALS['TEMPLATE_OVERRIDE']['MOD']) && !empty($GLOBALS['TEMPLATE_OVERRIDE']['MOD']))
+		if (is_array($GLOBALS['TEMPLATE_OVERRIDE']['CTE']) && !empty($GLOBALS['TEMPLATE_OVERRIDE']['CTE']))
 		{
-			foreach ($GLOBALS['TEMPLATE_OVERRIDE']['MOD'] as $strPrefix)
+			foreach ($GLOBALS['TEMPLATE_OVERRIDE']['CTE'] as $strPrefix)
 			{
-				$arrTemplates = array_merge($arrTemplates, $this->getTemplateGroup($strPrefix, $intPid));
+				$arrTemplates = array_merge($arrTemplates, $this->getTemplateGroup($strPrefix, $intTheme));
 			}
 		}
 

@@ -14,3 +14,14 @@
 CREATE TABLE `tl_module` (
   `module_template` varchar(255) NOT NULL default ''
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+-- --------------------------------------------------------
+
+-- 
+-- Table `tl_content`
+-- 
+
+CREATE TABLE `tl_content` (
+  `ce_template` varchar(255) NOT NULL default ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

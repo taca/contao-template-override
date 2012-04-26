@@ -30,27 +30,8 @@
 
 
 /**
- * Class ModuleTemplateOverride 
- *
- * Provide a method to override default module templates.
- * @copyright  Kamil Kuzminski 2012 
- * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com> 
- * @package    Controller
+ * Fields
  */
-class ModuleTemplateOverride
-{
-
-	/**
-	 * Override the default module template
-	 * @param object
-	 */
-	public function parseTemplate($objTemplate)
-	{
-		if ($objTemplate->module_template != '')
-		{
-			$objTemplate->setName($objTemplate->module_template);
-		}
-	}
-}
+$GLOBALS['TL_LANG']['tl_content']['ce_template'] = array('Content element template', 'Here you can select a custom content element template.');
 
 ?>

@@ -30,21 +30,32 @@
 
 
 /**
- * Register a hook to override front end templates
+ * Class TemplateOverride 
+ *
+ * Provide a method to override default templates.
+ * @copyright  Kamil Kuzminski 2012 
+ * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com> 
+ * @package    Controller
  */
-if (TL_MODE == 'FE')
+class TemplateOverride
 {
-	$GLOBALS['TL_HOOKS']['parseTemplate'][] = array('TemplateOverride', 'parseTemplate');
+
+	/**
+	 * Override the default template
+	 * @param object
+	 */
+	public function parseTemplate($objTemplate)
+	{
+		if ($objTemplate->module_template != '')
+		{
+			$objTemplate->setName($objTemplate->module_template);
+		}
+
+		if ($objTemplate->ce_template != '')
+		{
+			$objTemplate->setName($objTemplate->ce_template);
+		}
+	}
 }
-
-
-/**
- * Extension configuration
- */
-$GLOBALS['TEMPLATE_OVERRIDE'] = array
-(
-	'MOD' => array('mod_'),
-	'CTE' => array('ce_')
-);
 
 ?>
