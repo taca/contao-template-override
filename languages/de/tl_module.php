@@ -22,7 +22,8 @@
  *
  * PHP version 5
  * @copyright  Kamil Kuzminski 2012 
- * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com> 
+ * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com>
+ * @author     Tristan Lins <tristan.lins@infinitysoft.de>
  * @package    TemplateOverride 
  * @license    LGPL 
  * @filesource

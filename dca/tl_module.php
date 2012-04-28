@@ -22,7 +22,8 @@
  *
  * PHP version 5
  * @copyright  Kamil Kuzminski 2012 
- * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com> 
+ * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com>
+ * @author     Tristan Lins <tristan.lins@infinitysoft.de>
  * @package    TemplateOverride 
  * @license    LGPL 
  * @filesource
@@ -53,7 +54,8 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['module_template'] = array
  *
  * Provide miscellaneous methods that are used by the data configuration array.
  * @copyright  Kamil Kuzminski 2012 
- * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com> 
+ * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com>
+ * @author     Tristan Lins <tristan.lins@infinitysoft.de>
  * @package    TemplateOverride 
  */
 class tl_module_template extends Backend
