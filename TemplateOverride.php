@@ -22,7 +22,8 @@
  *
  * PHP version 5
  * @copyright  Kamil Kuzminski 2012 
- * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com> 
+ * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com>
+ * @author     Tristan Lins <tristan.lins@infinitysoft.de>
  * @package    TemplateOverride 
  * @license    LGPL 
  * @filesource
@@ -34,11 +35,55 @@
  *
  * Provide a method to override default templates.
  * @copyright  Kamil Kuzminski 2012 
- * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com> 
+ * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com>
+ * @author     Tristan Lins <tristan.lins@infinitysoft.de>
  * @package    Controller
  */
 class TemplateOverride
 {
+	/**
+	 * Update the DCA palettes
+	 * @param DataContainer
+	 */
+	public function updatePalettes($dc)
+	{
+		$strTable = $dc->table;
+
+		switch ($strTable)
+		{
+			case 'tl_module':
+				$strField = 'module_template';
+				break;
+
+			case 'tl_content':
+				$strField = 'ce_template';
+				break;
+
+			default:
+				return;
+		}
+
+		foreach ($GLOBALS['TL_DCA'][$strTable]['palettes'] as $name => $palette)
+		{
+			// Skip non-array palettes
+			if (!is_string($palette))
+			{
+				continue;
+			}
+
+			if (stripos($palette, 'template_legend') !== false)
+			{
+				$GLOBALS['TL_DCA'][$strTable]['palettes'][$name] = preg_replace(
+					'#(\{template_legend(:hide)?\}[^;]*)(;)?#i',
+					'$1,' . $strField . '$3',
+					$palette);
+			}
+			else
+			{
+				$GLOBALS['TL_DCA'][$strTable]['palettes'][$name] .= ';{template_legend:hide},' . $strField;
+			}
+		}
+	}
 
 	/**
 	 * Override the default template
