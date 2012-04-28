@@ -32,23 +32,7 @@
 /**
  * Extend all tl_module palettes
  */
-foreach ($GLOBALS['TL_DCA']['tl_module']['palettes'] as $name => $palette)
-{
-	// Skip non-array palettes
-	if (!is_string($palette))
-	{
-		continue;
-	}
-
-	if (stripos($palette, 'template_legend') !== false)
-	{
-		$GLOBALS['TL_DCA']['tl_module']['palettes'][$name] = preg_replace_callback('/{template_legend(:hide)?}[a-z_,]+;/i', create_function('$matches', 'return str_replace(";", ",module_template;", $matches[0]);'), $palette);
-	}
-	else
-	{
-		$GLOBALS['TL_DCA']['tl_module']['palettes'][$name] .= ';{template_legend:hide},module_template';
-	}
-}
+$GLOBALS['TL_DCA']['tl_module']['config']['onload_callback'][] = array('TemplateOverride', 'updatePalettes');
 
 
 /**
@@ -74,7 +58,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['module_template'] = array
  */
 class tl_module_template extends Backend
 {
-
 	/**
 	 * Return all module templates as array
 	 * @param DataContainer
