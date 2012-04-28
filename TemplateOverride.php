@@ -41,15 +41,14 @@
  */
 class TemplateOverride
 {
+
 	/**
 	 * Update the DCA palettes
 	 * @param DataContainer
 	 */
-	public function updatePalettes($dc)
+	public function updatePalettes(DataContainer $dc)
 	{
-		$strTable = $dc->table;
-
-		switch ($strTable)
+		switch ($dc->table)
 		{
 			case 'tl_module':
 				$strField = 'module_template';
@@ -63,9 +62,10 @@ class TemplateOverride
 				return;
 		}
 
-		foreach ($GLOBALS['TL_DCA'][$strTable]['palettes'] as $name => $palette)
+		// Add the template field to all palettes
+		foreach ($GLOBALS['TL_DCA'][$dc->table]['palettes'] as $name => $palette)
 		{
-			// Skip non-array palettes
+			// Skip non-string palettes
 			if (!is_string($palette))
 			{
 				continue;
@@ -73,17 +73,15 @@ class TemplateOverride
 
 			if (stripos($palette, 'template_legend') !== false)
 			{
-				$GLOBALS['TL_DCA'][$strTable]['palettes'][$name] = preg_replace(
-					'#(\{template_legend(:hide)?\}[^;]*)(;)?#i',
-					'$1,' . $strField . '$3',
-					$palette);
+				$GLOBALS['TL_DCA'][$dc->table]['palettes'][$name] = preg_replace('#(\{template_legend(:hide)?\}[^;]*)(;)?#i', '$1,'.$strField.'$3', $palette);
 			}
 			else
 			{
-				$GLOBALS['TL_DCA'][$strTable]['palettes'][$name] .= ';{template_legend:hide},' . $strField;
+				$GLOBALS['TL_DCA'][$dc->table]['palettes'][$name] .= ';{template_legend:hide},' . $strField;
 			}
 		}
 	}
+
 
 	/**
 	 * Override the default template
