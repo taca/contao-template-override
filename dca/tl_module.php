@@ -30,12 +30,6 @@
 
 
 /**
- * Load tl_module data container
- */
-$this->loadDataContainer('tl_module');
-
-
-/**
  * Extend all tl_module palettes
  */
 foreach ($GLOBALS['TL_DCA']['tl_module']['palettes'] as $name => $palette)

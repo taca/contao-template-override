@@ -30,12 +30,6 @@
 
 
 /**
- * Load tl_content data container
- */
-$this->loadDataContainer('tl_content');
-
-
-/**
  * Extend all tl_content palettes
  */
 foreach ($GLOBALS['TL_DCA']['tl_content']['palettes'] as $name => $palette)
